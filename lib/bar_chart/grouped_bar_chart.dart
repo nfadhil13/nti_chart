@@ -63,8 +63,9 @@ class GroupedBarChart extends StatelessWidget {
         .map((e) => charts.Series<MapEntry<String, BarChartData>, String>(
             id: e.key,
             domainFn: (MapEntry<String, BarChartData> value, _) => value.key,
-            measureFn: (MapEntry<String, BarChartData> value, _) =>
-                value.value.value,
+            measureFn: (MapEntry<String, BarChartData> value, _) {
+              return value.value.value;
+            },
             data: e.value.data.entries.toList(),
             colorFn: (MapEntry<String, BarChartData> value, _) {
               final defaultColor = e.value.defaultColor.toChartsFlutterColor();
@@ -81,6 +82,9 @@ class GroupedBarChart extends StatelessWidget {
       mapFromBarChartData(entries: entries),
       animate: animate,
       barGroupingType: charts.BarGroupingType.grouped,
+      primaryMeasureAxis: charts.NumericAxisSpec(
+        tickFormatterSpec: charts.BasicNumericTickFormatterSpec.fromNumberFormat(NumberFormat.compact())
+      ),
       behaviors: isScrollable
           ? [charts.SlidingViewport(), charts.PanAndZoomBehavior()]
           : [],
@@ -162,7 +166,7 @@ class _BarDescription extends StatelessWidget {
   Widget build(BuildContext context) {
     // 90% Of Font Size
     final double circleSize =
-        style.fontSize == null ? style.fontSize! * 5 / 10 : 12;
+        style.fontSize != null ? style.fontSize! * 5 / 10 : 12;
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [

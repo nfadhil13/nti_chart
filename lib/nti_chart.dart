@@ -2,6 +2,7 @@ library nti_chart;
 
 import 'package:flutter/material.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
+import 'package:intl/intl.dart';
 
 part './stats_chart/util/icon_data.dart';
 part './stats_chart/util/stats_chart_alignment.dart';
