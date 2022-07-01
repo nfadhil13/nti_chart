@@ -5,7 +5,10 @@
 ## How To Use 
 
 1. Buat folder baru dengan nama folder `packages` pada root folder project flutter.
-2. Clone repository ini pada folder `packages` yang dibuat pada step 1
+2. Clone repository ini pada folder `packages` yang dibuat pada step 1. Clone package sebagai submodel dengan command berikut
+    ```sh
+    git submodule add <link_repo_package>
+    ```
 3. Tambahkan package nti_chart pada `pubspec.yaml` seperti gambar dibawah
 
 ![](./documentation/images/how_to.png)
