@@ -1,84 +1,95 @@
 part of '../nti_chart.dart';
 
-class StatsChart extends StatelessWidget {
-  final Text titleText;
-  final Text? detailText;
-  final ImageData? icon;
-  final StatsChartAlignment alignment;
+abstract class StatsChart extends StatelessWidget {
+  final Text title;
+  final Text value;
+  final StatsChartTitleTextPosition titlePosition;
   final Color? cardBackgroundColor;
   final double? cardElevation;
-  final ShapeBorder? shapeBorder;
-  final EdgeInsetsGeometry? cardPadding;
+  final double borderRadius;
+  final EdgeInsets? cardPadding;
   final double? textSpacing;
+  final EdgeInsets? textPadding;
+  final StatsChartTextAlignment textAlignment;
 
   const StatsChart(
       {Key? key,
-      required this.titleText,
-      this.detailText,
-      this.icon,
-      this.alignment = StatsChartAlignment.center,
+      required this.title,
+      required this.value,
       this.cardBackgroundColor,
       this.cardElevation,
-      this.shapeBorder,
+      this.borderRadius = 6,
       this.textSpacing,
-      this.cardPadding})
+      this.cardPadding,
+      this.titlePosition = StatsChartTitleTextPosition.bot,
+      this.textAlignment = StatsChartTextAlignment.center,
+      this.textPadding})
       : super(key: key);
 
-  Widget renderWhenCenter(Widget textWidget, Widget? imageWidget) {
-    return Stack(
-      children: [
-        if (imageWidget != null) Positioned(child: imageWidget),
-        Positioned.fill(child: textWidget)
-      ],
-    );
+  Widget _buildTextChart() {
+    return _StatsChartText(
+        value: value,
+        title: title,
+        titlePosition: titlePosition,
+        textSpacing: textSpacing,
+        textPadding: textPadding,
+        statsChartTextAlignment: textAlignment);
   }
 
-  Widget renderWhenSpaceAround(Widget textWidget, Widget? imageWidget) {
-    return Row(
-      mainAxisAlignment: imageWidget != null
-          ? MainAxisAlignment.spaceBetween
-          : MainAxisAlignment.end,
-      children: [if (imageWidget != null) imageWidget, textWidget],
-    );
-  }
+  Widget buildChart(Widget textWidget, BuildContext context);
 
   @override
   Widget build(BuildContext context) {
-    final textWidget = _TextWidget(
-        titleText: titleText, detailText: detailText, textSpacing: textSpacing);
     return SizedBox(
-      width: double.infinity,
-      child: Card(
-        shape: shapeBorder ??
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
-        elevation: cardElevation,
-        color: cardBackgroundColor ?? Colors.white,
-        child: Padding(
-            padding: cardPadding ?? const EdgeInsets.all(16),
-            child: alignment.isCenter()
-                ? renderWhenCenter(textWidget, icon?.getImageWidget())
-                : renderWhenSpaceAround(textWidget, icon?.getImageWidget())),
-      ),
-    );
+        width: double.infinity,
+        child: Card(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(borderRadius)),
+          elevation: cardElevation,
+          color: cardBackgroundColor ?? Colors.white,
+          child: Padding(
+              padding: cardPadding ?? const EdgeInsets.all(16),
+              child: buildChart(_buildTextChart(), context)),
+        ));
   }
 }
 
-class _TextWidget extends StatelessWidget {
-  final Text titleText;
-  final Text? detailText;
+class _StatsChartText extends StatelessWidget {
+  final Text value;
+  final Text title;
   final double? textSpacing;
-  const _TextWidget(
-      {Key? key, required this.titleText, this.detailText, this.textSpacing})
+  final StatsChartTitleTextPosition titlePosition;
+  final StatsChartTextAlignment statsChartTextAlignment;
+  final EdgeInsets? textPadding;
+
+  const _StatsChartText(
+      {Key? key,
+      required this.value,
+      required this.title,
+      required this.titlePosition,
+      this.textSpacing,
+      required this.statsChartTextAlignment, this.textPadding = EdgeInsets.zero})
       : super(key: key);
 
   @override
-  Widget build(BuildContext context) => Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          titleText,
-          if (detailText != null && textSpacing != null)
-            SizedBox(height: textSpacing),
-          detailText ?? const SizedBox.shrink(),
-        ],
-      );
+  Widget build(BuildContext context) {
+    return Padding(
+        padding: textPadding ?? EdgeInsets.zero,
+        child: Builder(builder: (ctx) {
+          switch (titlePosition) {
+            case StatsChartTitleTextPosition.bot:
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: statsChartTextAlignment.alignment,
+                children: [value, SizedBox(width: textSpacing), title],
+              );
+            case StatsChartTitleTextPosition.top:
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: statsChartTextAlignment.alignment,
+                children: [title, SizedBox(height: textSpacing), value],
+              );
+          }
+        }));
+  }
 }

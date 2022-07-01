@@ -1,8 +1,16 @@
 part of "../../nti_chart.dart";
 
-enum StatsChartAlignment {
-  center,
-  spaceAround;
+enum StatsChartTitleTextPosition {
+  top,
+  bot,
+}
 
-  bool isCenter() => this == StatsChartAlignment.center;
+enum StatsChartTextAlignment {
+  start(CrossAxisAlignment.start),
+  center(CrossAxisAlignment.center),
+  end(CrossAxisAlignment.end);
+
+  final CrossAxisAlignment alignment;
+
+  const StatsChartTextAlignment(this.alignment);
 }

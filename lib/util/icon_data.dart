@@ -1,4 +1,4 @@
-part of "../../nti_chart.dart";
+part of '../nti_chart.dart';
 
 abstract class ImageData {
   const ImageData();
@@ -25,7 +25,7 @@ abstract class ImageData {
   factory ImageData.widget(Widget widget) => WidgetImageData(widget);
 }
 
-enum ImageSource { asset, network }
+enum ImageSource { asset, network, memory }
 
 class IconImageData extends ImageData {
   final Icon icon;
@@ -52,6 +52,17 @@ class ImageImageData extends ImageData {
     }
     return Image.network(path, width: width, height: height);
   }
+}
+
+class MemoryImageData extends ImageData {
+  final Uint8List image;
+  final double? width;
+  final double? height;
+
+  MemoryImageData(this.image, this.width, this.height);
+
+  @override
+  Widget getImageWidget() => Image.memory(image, width: width, height: height);
 }
 
 class WidgetImageData extends ImageData {
