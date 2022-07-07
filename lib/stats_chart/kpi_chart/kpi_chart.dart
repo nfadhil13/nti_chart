@@ -159,7 +159,7 @@ class _KPIPercentage extends StatelessWidget {
           child: LayoutBuilder(builder: (ctx, constraint) {
             final width = percentage >= 1 ? constraint.maxWidth : percentage * constraint.maxWidth;
             return Container(
-                width: width,
+                width: width < 0 ? 0 : width,
                 height: constraint.maxHeight,
                 decoration: BoxDecoration(
                   color: style?.activeColor ?? Colors.green,
