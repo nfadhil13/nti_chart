@@ -140,6 +140,7 @@ class _KPIPercentage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final totalValue = this.totalValue.abs();
     final double percentage = currentValue / totalValue;
     final percentageString =
         "${(percentage * 100).toStringAsFixed(style?.fractionDigits ?? 0)}%";
@@ -156,7 +157,7 @@ class _KPIPercentage extends StatelessWidget {
             borderRadius: BorderRadius.circular(radius),
           ),
           child: LayoutBuilder(builder: (ctx, constraint) {
-            final width = percentage * constraint.maxWidth;
+            final width = percentage >= 1 ? constraint.maxWidth : percentage * constraint.maxWidth;
             return Container(
                 width: width,
                 height: constraint.maxHeight,
